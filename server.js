@@ -14,16 +14,12 @@ app.get('/', (req, res) => {
 // promise syntax
 // GET genres
 app.get('/genres', (req, res) => {
-  Models.Genre.findAll().then(genres => {
-    res.send(genres);
-  });
+  Models.Genre.findAll().then(genres => res.send(genres));
 });
 
 // GET media types
 app.get('/mediatypes', (req, res) => {
-  Models.MediaType.findAll().then(mediatypes => {
-    res.send(mediatypes);
-  });
+  Models.MediaType.findAll().then(mediatypes => res.send(mediatypes));
 });
 
 // GET artists
@@ -36,6 +32,19 @@ app.get('/playlists', (req, res) => {
   Models.Playlist.findAll().then(playlists => res.send(playlists));
 });
 
+// GET albums with artist name
+app.get('/albums', (req, res) => {
+  Models.Album.findAll({
+      attributes: ['AlbumId', 'Title'],
+      include: {
+        model: Models.Artist,
+        attributes: ['Name']
+      }
+    })
+    .then(albums => res.send(albums));
+});
+
+// LISTEN
 app.listen(PORT, () => {
   console.log(`App listening on Port ${PORT}`);
 })
