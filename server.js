@@ -69,10 +69,26 @@ app.get('/customers/:id/', (req, res) => {
   Models.Customer.findOne({where: {CustomerId: req.params.id}}).then(customer => res.send(customer));
 });
 
-// GET customers/id/invoices
+// GET customers/:id/invoices
 app.get('/customers/:id/invoices', (req, res) => {
   Models.Customer.findOne({where: {CustomerId: req.params.id}, include: Models.Invoice}).then(customer => res.send(customer));
 });
+
+// GET invoices/:id
+app.get('/invoices/:id', (req, res) => {
+  Models.Invoice.findOne({where: {InvoiceId: req.params.id}}).then(invoice => invoice.getCustomer()).then(customer => res.send(customer));
+});
+
+// sequelize can to this for you. it creates .getWhatever()
+// app.get('/customers/:id/invoices', (req, res) => {
+//   models.Customer.findOne({
+//     where: {
+//       CustomerId: req.params.id
+//     },
+//   })
+//   .then(customer => customer.getInvoices())
+//   .then(invoices => res.send(invoices));
+// });
 
 // LISTEN
 app.listen(PORT, () => {
