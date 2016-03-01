@@ -44,6 +44,36 @@ app.get('/albums', (req, res) => {
     .then(albums => res.send(albums));
 });
 
+// GET invoices
+app.get('/invoices', (req, res) => {
+  Models.Invoice.findAll({
+      attributes: { exclude: 'CustomerId' },
+      include: {
+        model: Models.Customer,
+        attributes: { exclude: [
+          'CustomerId',
+          'SupportRepId'
+        ]}
+      }
+    })
+    .then(invoices => res.send(invoices));
+});
+
+// GET customers
+app.get('/customers', (req, res) => {
+  Models.Customer.findAll().then(customers => res.send(customers));
+});
+
+// GET customers/id/
+app.get('/customers/:id/', (req, res) => {
+  Models.Customer.findOne({where: {CustomerId: req.params.id}}).then(customer => res.send(customer));
+});
+
+// GET customers/id/invoices
+app.get('/customers/:id/invoices', (req, res) => {
+  Models.Customer.findOne({where: {CustomerId: req.params.id}, include: Models.Invoice}).then(customer => res.send(customer));
+});
+
 // LISTEN
 app.listen(PORT, () => {
   console.log(`App listening on Port ${PORT}`);
